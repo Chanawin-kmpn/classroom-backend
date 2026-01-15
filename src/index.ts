@@ -1,8 +1,12 @@
+import 'dotenv/config';
 import express from 'express';
 import subjectRouter from './routes/subjects';
 import cors from 'cors';
 const app = express();
 const PORT = 8000;
+
+if (!process.env.FRONTEND_URL)
+    throw new Error('FRONTEND_URL is not set in .env file');
 
 app.use(
     cors({
