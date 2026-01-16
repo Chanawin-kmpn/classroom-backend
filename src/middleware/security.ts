@@ -17,7 +17,7 @@ const securityMiddleware = async (
 
         switch (role) {
             case 'admin':
-                limit = 2;
+                limit = 20;
                 message = 'Admin request limit exceeded (20 per minute)';
                 break;
             case 'teacher':
@@ -48,24 +48,24 @@ const securityMiddleware = async (
             },
         };
 
-        const desision = await client.protect(arcjetRequest);
+        const decision = await client.protect(arcjetRequest);
 
-        if (desision.isDenied() && desision.reason.isBot()) {
+        if (decision.isDenied() && decision.reason.isBot()) {
             return res.status(403).json({
                 error: 'Forbidden',
                 message: 'Automated requests are not allowed',
             });
         }
 
-        if (desision.isDenied() && desision.reason.isShield()) {
+        if (decision.isDenied() && decision.reason.isShield()) {
             return res.status(403).json({
                 error: 'Forbidden',
                 message: 'Requests blocked by security policy',
             });
         }
 
-        if (desision.isDenied() && desision.reason.isRateLimit()) {
-            return res.status(403).json({
+        if (decision.isDenied() && decision.reason.isRateLimit()) {
+            return res.status(429).json({
                 error: 'Too many requests',
                 message,
             });
